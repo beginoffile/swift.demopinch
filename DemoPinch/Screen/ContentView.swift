@@ -194,6 +194,7 @@ struct ContentView: View {
                                 withAnimation(.easeOut(duration: 1)) {
                                     isAnimating = true
                                     pageIndex = item.id
+                                    resetImageState()
 
                                 }
                             }
