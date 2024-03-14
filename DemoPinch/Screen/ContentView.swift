@@ -15,12 +15,19 @@ struct ContentView: View {
     @State private var imageOffset: CGSize = .zero
     @State private var isDrawerOpen: Bool = false
     
+    let pages: [Page] = pagesData
+    @State private var pageIndex: Int = 1
+    
     // MARK: - FUNCTION
     func resetImageState(){
         return withAnimation(.spring()){
             imageScale  = 1
             imageOffset = .zero
         }
+    }
+    
+    func currentPage() -> String{
+        return pages[pageIndex - 1].imageName
     }
     // MARK: - CONTENT
     var body: some View {
@@ -29,7 +36,7 @@ struct ContentView: View {
             ZStack{
                 Color.clear
                 // MARK: - PAGE IMAGE
-                Image("magazine-front-cover")
+                Image(currentPage())
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .cornerRadius(10)
@@ -170,6 +177,29 @@ struct ContentView: View {
                         }
                     
                     //MARK: -  THUMBNAILS
+                    ForEach(pages){item in
+                        Image(item.thumbnailName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .opacity(isDrawerOpen ? 1 : 0)
+                            .animation(.easeOut(duration: 0.5), value: isDrawerOpen)
+                            .onTapGesture {
+                                withAnimation(.easeOut(duration: 0.5)) {
+                                
+                                    isDrawerOpen = false
+                                }
+                                withAnimation(.easeOut(duration: 1)) {
+                                    isAnimating = true
+                                    pageIndex = item.id
+
+                                }
+                            }
+                            
+                            
+                    }
                     Spacer()
                 }
                     .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
